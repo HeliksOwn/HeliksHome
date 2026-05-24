@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeliksHome</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: #16213e;
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .card h2 {
+      font-size: 1rem;
+      color: #aaa;
+      margin: 0 0 0.5rem 0;
+    }
+    .card .value {
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>HeliksHome</h1>
+  <div class="grid">
+    <div class="card">
+      <h2>Ute</h2>
+      <div class="value" id="temp-out">--°C</div>
+    </div>
+    <div class="card">
+      <h2>Inne</h2>
+      <div class="value" id="temp-in">--°C</div>
+    </div>
+    <div class="card">
+      <h2>Neste buss</h2>
+      <div class="value" id="bus">--</div>
+    </div>
+  </div>
+</body>
+</html>
