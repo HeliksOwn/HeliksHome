@@ -5,17 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HeliksHome</title>
   <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: sans-serif;
       background: #1a1a2e;
       color: #eee;
-      margin: 0;
-      padding: 2rem;
     }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 2rem;
+    .tabs {
+      display: flex;
+      background: #0f0f1a;
+      border-bottom: 2px solid #333;
     }
+    .tab {
+      padding: 1rem 2rem;
+      cursor: pointer;
+      color: #aaa;
+      font-size: 1rem;
+    }
+    .tab.active {
+      color: #fff;
+      border-bottom: 2px solid #4a9eff;
+      margin-bottom: -2px;
+    }
+    .page { display: none; padding: 2rem; }
+    .page.active { display: block; }
+
+    /* Værsiden */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -26,34 +41,60 @@
       border-radius: 12px;
       padding: 1.5rem;
     }
-    .card h2 {
-      font-size: 1rem;
-      color: #aaa;
-      margin: 0 0 0.5rem 0;
+    .card h2 { font-size: 1rem; color: #aaa; margin-bottom: 0.5rem; }
+    .card .value { font-size: 2.5rem; font-weight: bold; }
+
+    /* Rutersiden */
+    .stop-section { margin-bottom: 2rem; }
+    .stop-section h2 {
+      font-size: 1.1rem;
+      color: #4a9eff;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #333;
     }
-    .card .value {
-      font-size: 2.5rem;
+    .direction-group { margin-bottom: 1rem; }
+    .direction-label {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .departure {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #222;
+    }
+    .line-badge {
+      background: #4a9eff;
+      color: #fff;
       font-weight: bold;
+      font-size: 0.85rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      min-width: 2.5rem;
+      text-align: center;
+    }
+    .dest { flex: 1; font-size: 0.95rem; }
+    .time { font-size: 1rem; font-weight: bold; color: #7dff8a; }
+    .realtime-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #7dff8a;
     }
   </style>
 </head>
-<script>
-  const ACCESS_TOKEN = "63510e77148076b5ac0de4a2|eaf4e49712727ec246e4a17940d0756c";
-
-  async function fetchWeather() {
-    const res = await fetch("https://api.netatmo.com/api/getstationsdata", {
-      headers: { "Authorization": "Bearer " + ACCESS_TOKEN }
-    });
-    const data = await res.json();
-    const indoor = data.body.devices[0].dashboard_data;
-    document.getElementById("temp-in").textContent = indoor.Temperature + "°C";
-  }
-
-  fetchWeather();
-  setInterval(fetchWeather, 5 * 60 * 1000);
-</script>
 <body>
-  <h1>HeliksHome</h1>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('vaer')">🌡 Vær</div>
+  <div class="tab" onclick="showTab('ruter')">🚌 Ruter</div>
+</div>
+
+<div id="vaer" class="page active">
   <div class="grid">
     <div class="card">
       <h2>Ute</h2>
@@ -63,10 +104,145 @@
       <h2>Inne</h2>
       <div class="value" id="temp-in">--°C</div>
     </div>
-    <div class="card">
-      <h2>Neste buss</h2>
-      <div class="value" id="bus">--</div>
-    </div>
   </div>
+</div>
+
+<div id="ruter" class="page">
+  <div class="stop-section">
+    <h2>Bislett</h2>
+    <div id="bislett"></div>
+  </div>
+  <div class="stop-section">
+    <h2>Colletts gate</h2>
+    <div id="colletts"></div>
+  </div>
+</div>
+
+<script>
+  // --- FANER ---
+  function showTab(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // --- NETATMO ---
+  const ACCESS_TOKEN = "63510e77148076b5ac0de4a2|eaf4e49712727ec246e4a17940d0756c";
+
+  async function fetchWeather() {
+    const res = await fetch("https://api.netatmo.com/api/getstationsdata", {
+      headers: { "Authorization": "Bearer " + ACCESS_TOKEN }
+    });
+    const data = await res.json();
+    const indoor = data.body.devices[0].dashboard_data;
+    document.getElementById("temp-in").textContent = indoor.Temperature + "°C";
+
+    const modules = data.body.devices[0].modules;
+    const outdoor = modules.find(m => m.type === "NAModule1");
+    if (outdoor && outdoor.dashboard_data) {
+      document.getElementById("temp-out").textContent = outdoor.dashboard_data.Temperature + "°C";
+    }
+  }
+
+  // --- RUTER / ENTUR ---
+  const STOPS = [
+    { id: "NSR:StopPlace:58353", name: "Bislett", elementId: "bislett" },
+    { id: "NSR:StopPlace:6286",  name: "Colletts gate", elementId: "colletts" }
+  ];
+
+  async function fetchDepartures(stop) {
+    const query = `
+    {
+      stopPlace(id: "${stop.id}") {
+        estimatedCalls(timeRange: 3600, numberOfDepartures: 20) {
+          expectedDepartureTime
+          destinationDisplay { frontText }
+          serviceJourney {
+            journeyPattern {
+              line { publicCode transportMode }
+            }
+          }
+          realtime
+        }
+      }
+    }`;
+
+    const res = await fetch("https://api.entur.io/journey-planner/v3/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "ET-Client-Name": "helikshome-dashboard"
+      },
+      body: JSON.stringify({ query })
+    });
+    const data = await res.json();
+    return data.data.stopPlace.estimatedCalls;
+  }
+
+  function formatTime(isoString) {
+    const d = new Date(isoString);
+    const now = new Date();
+    const diffMin = Math.round((d - now) / 60000);
+    if (diffMin <= 0) return "Nå";
+    if (diffMin < 60) return diffMin + " min";
+    return d.toTimeString().slice(0, 5);
+  }
+
+  function groupByDirection(calls) {
+    const groups = {};
+    for (const call of calls) {
+      const dest = call.destinationDisplay.frontText;
+      if (!groups[dest]) groups[dest] = [];
+      groups[dest].push(call);
+    }
+    return groups;
+  }
+
+  function renderDepartures(calls, elementId) {
+    const el = document.getElementById(elementId);
+    if (!calls || calls.length === 0) {
+      el.innerHTML = '<p style="color:#aaa">Ingen avganger funnet</p>';
+      return;
+    }
+
+    const groups = groupByDirection(calls);
+    el.innerHTML = "";
+
+    for (const [dest, departures] of Object.entries(groups)) {
+      const group = document.createElement("div");
+      group.className = "direction-group";
+      group.innerHTML = `<div class="direction-label">→ ${dest}</div>`;
+
+      for (const dep of departures.slice(0, 3)) {
+        const line = dep.serviceJourney.journeyPattern.line;
+        const div = document.createElement("div");
+        div.className = "departure";
+        div.innerHTML = `
+          <span class="line-badge">${line.publicCode}</span>
+          <span class="dest">${dest}</span>
+          ${dep.realtime ? '<span class="realtime-dot"></span>' : ''}
+          <span class="time">${formatTime(dep.expectedDepartureTime)}</span>
+        `;
+        group.appendChild(div);
+      }
+      el.appendChild(group);
+    }
+  }
+
+  async function fetchAllDepartures() {
+    for (const stop of STOPS) {
+      const calls = await fetchDepartures(stop);
+      renderDepartures(calls, stop.elementId);
+    }
+  }
+
+  // --- INIT ---
+  fetchWeather();
+  setInterval(fetchWeather, 5 * 60 * 1000);
+
+  fetchAllDepartures();
+  setInterval(fetchAllDepartures, 60 * 1000);
+</script>
 </body>
 </html>
