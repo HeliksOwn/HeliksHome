@@ -180,10 +180,11 @@ async function fetchNature() {
     }
 
     const forecastEl = document.getElementById("forecast");
-    forecastEl.innerHTML = "";
-    const dayNames = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
+        forecastEl.innerHTML = "";
+        forecastEl.className = "forecast-grid";
+        const dayNames = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
 
-    for (const [date, t] of Object.entries(days).slice(0, 7)) {
+        for (const [date, t] of Object.entries(days).slice(0, 8)) {
         const d = new Date(date);
         const dayName = dayNames[d.getDay()];
         const dateStr = `${dayName} ${d.getDate()}.${d.getMonth() + 1}`;
@@ -194,14 +195,12 @@ async function fetchNature() {
         const div = document.createElement("div");
         div.className = "forecast-day";
         div.innerHTML = `
-        <span class="forecast-date">${dateStr}</span>
-        <span class="forecast-icon">${getSymbol(symbol)}</span>
-        <span class="forecast-temp">${temp}°C</span>
-        <span class="forecast-rain">💧 ${rain} mm</span>
+            <span class="forecast-date">${dateStr}</span>
+            <span class="forecast-icon">${getSymbol(symbol)}</span>
+            <span class="forecast-temp">${temp}°C</span>
+            <span class="forecast-rain">💧 ${rain} mm</span>
         `;
         forecastEl.appendChild(div);
     }
-    }
-
     fetchNature();
     setInterval(fetchNature, 30 * 60 * 1000);
