@@ -157,13 +157,8 @@
     el.classList.add('active');
   }
 
-  // --- NETATMO ---
-  const ACCESS_TOKEN = "63510e77148076b5ac0de4a2|eaf4e49712727ec246e4a17940d0756c";
-
   async function fetchWeather() {
-    const res = await fetch("https://api.netatmo.com/api/getstationsdata", {
-      headers: { "Authorization": "Bearer " + ACCESS_TOKEN }
-    });
+    const res = await fetch("/api/netatmo");
     const data = await res.json();
     const indoor = data.body.devices[0].dashboard_data;
     document.getElementById("temp-in").textContent = indoor.Temperature + "°C";
