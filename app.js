@@ -165,13 +165,16 @@ async function fetchNature() {
 
   // 7-dagersprognose – én per dag kl 12:00
   const days = {};
-  for (const t of timeseries) {
+    for (const t of timeseries) {
     const d = new Date(t.time);
     const dateKey = d.toISOString().slice(0, 10);
-    if (d.getHours() === 12 && !days[dateKey]) {
-      days[dateKey] = t;
+    // Foretrekk kl 12, men ta første tilgjengelige hvis ikke
+    if (!days[dateKey]) {
+        days[dateKey] = t;
+    } else if (d.getHours() === 12) {
+        days[dateKey] = t;
     }
-  }
+    }
 
     const forecastEl = document.getElementById("forecast");
     forecastEl.innerHTML = "";
