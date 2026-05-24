@@ -6,7 +6,7 @@ body {
 }
 .tabs {
   display: flex;
-  background: #0f0f1a;
+  background: darkblue;
   border-bottom: 2px solid #333;
 }
 .tab {
@@ -125,42 +125,11 @@ body {
   letter-spacing: 0.05em;
 }
 
-/* #vaer {
-  padding: 2rem;
-  background: #fffba0;
-  min-height: calc(100vh - 56px);
-}
-
-#vaer .section-label {
-  color: #1565C0;
-}
-
-#vaer .card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 1.5rem;
-  border-left: 4px solid #1565C0;
-  border-top: 2px solid #1565C0;
-  border-right: 1px solid #1565C0;
-  border-bottom: 1px solid #1565C0;
-}
-
-#vaer .card h2 {
-  font-size: 1.1rem;
-  color: #1565C0;
-  margin-bottom: 0.5rem;
-}
-
-#vaer .card .value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #111;
-} */
 
 #vaer {
   padding: 2rem;
   min-height: calc(100vh - 56px);
-  background: linear-gradient(135deg, #1a6b3c 0%, #1565C0 50%, #0d3b6e 100%);
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e063 50%, #2d8a4e 100%);
 }
 
 #vaer .section-label {
