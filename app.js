@@ -202,6 +202,7 @@ async function fetchNature() {
         `;
         forecastEl.appendChild(div);
     }
-    fetchNature();
-    setInterval(fetchNature, 30 * 60 * 1000);
 }
+
+fetchNature();
+setInterval(fetchNature, 30 * 60 * 1000);
