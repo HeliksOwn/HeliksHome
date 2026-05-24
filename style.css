@@ -125,7 +125,7 @@ body {
   letter-spacing: 0.05em;
 }
 
-#vaer {
+/* #vaer {
   padding: 2rem;
   background: #fffba0;
   min-height: calc(100vh - 56px);
@@ -155,10 +155,55 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   color: #111;
+} */
+
+#vaer {
+  padding: 2rem;
+  min-height: calc(100vh - 56px);
+  background: linear-gradient(135deg, #1a6b3c 0%, #1565C0 50%, #0d3b6e 100%);
+}
+
+#vaer .section-label {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  margin: 1.5rem 0 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+#vaer .card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+#vaer .card:hover {
+  transform: translateY(-2px);
+}
+
+#vaer .card h2 {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#vaer .card .value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 /* Natursiden */
-#natur {
+/* #natur {
   padding: 2rem;
   background: #f0f7ee;
   min-height: calc(100vh - 56px);
@@ -189,9 +234,81 @@ body {
   font-size: 2rem;
   font-weight: 700;
   color: #111;
+} */
+
+#natur {
+  padding: 2rem;
+  min-height: calc(100vh - 56px);
+  background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 50%, #1565C0 100%);
+  color: #fff;
+}
+
+.natur-card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.natur-label {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.natur-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 .forecast-section h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+.forecast-day {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.forecast-date {
+  min-width: 8rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+}
+
+.forecast-icon { font-size: 2rem; }
+
+.forecast-temp {
+  flex: 1;
+  color: #fff;
+}
+
+.forecast-rain {
+  color: rgba(180, 220, 255, 0.9);
+  min-width: 4rem;
+  text-align: right;
+}
+
+/* .forecast-section h2 {
   font-size: 2rem;
   font-weight: 700;
   color: #2e7d32;
@@ -228,4 +345,4 @@ body {
   color: #1565C0;
   min-width: 4rem;
   text-align: right;
-}
+} */
