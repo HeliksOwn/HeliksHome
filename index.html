@@ -15,14 +15,39 @@
 </div>
 
 <div id="vaer" class="page">
+  <div class="section-label">Inne</div>
   <div class="grid">
     <div class="card">
-      <h2>Ute</h2>
+      <h2>Temperatur</h2>
+      <div class="value" id="temp-in">--°C</div>
+    </div>
+    <div class="card">
+      <h2>Fuktighet</h2>
+      <div class="value" id="humidity-in">--%</div>
+    </div>
+    <div class="card">
+      <h2>CO₂</h2>
+      <div class="value" id="co2">-- ppm</div>
+    </div>
+    <div class="card">
+      <h2>Støy</h2>
+      <div class="value" id="noise">-- dB</div>
+    </div>
+    <div class="card">
+      <h2>Lufttrykk</h2>
+      <div class="value" id="pressure">-- hPa</div>
+    </div>
+  </div>
+
+  <div class="section-label">Ute</div>
+  <div class="grid">
+    <div class="card">
+      <h2>Temperatur</h2>
       <div class="value" id="temp-out">--°C</div>
     </div>
     <div class="card">
-      <h2>Inne</h2>
-      <div class="value" id="temp-in">--°C</div>
+      <h2>Fuktighet</h2>
+      <div class="value" id="humidity-out">--%</div>
     </div>
   </div>
 </div>
@@ -46,18 +71,36 @@
     el.classList.add('active');
   }
 
-  async function fetchWeather() {
+//   async function fetchWeather() {
+//     const res = await fetch("/api/netatmo");
+//     const data = await res.json();
+//     const indoor = data.body.devices[0].dashboard_data;
+//     document.getElementById("temp-in").textContent = indoor.Temperature + "°C";
+//     const outdoor = data.body.devices[0].modules.find(m => m.type === "NAModule1");
+//     if (outdoor && outdoor.dashboard_data) {
+//       document.getElementById("temp-out").textContent = outdoor.dashboard_data.Temperature + "°C";
+//     }
+//   }
+
+    async function fetchWeather() {
     const res = await fetch("/api/netatmo");
     const data = await res.json();
     const indoor = data.body.devices[0].dashboard_data;
+
     document.getElementById("temp-in").textContent = indoor.Temperature + "°C";
+    document.getElementById("humidity-in").textContent = indoor.Humidity + "%";
+    document.getElementById("co2").textContent = indoor.CO2 + " ppm";
+    document.getElementById("noise").textContent = indoor.Noise + " dB";
+    document.getElementById("pressure").textContent = indoor.Pressure + " hPa";
+
     const outdoor = data.body.devices[0].modules.find(m => m.type === "NAModule1");
     if (outdoor && outdoor.dashboard_data) {
-      document.getElementById("temp-out").textContent = outdoor.dashboard_data.Temperature + "°C";
+        document.getElementById("temp-out").textContent = outdoor.dashboard_data.Temperature + "°C";
+        document.getElementById("humidity-out").textContent = outdoor.dashboard_data.Humidity + "%";
     }
-  }
+    }
 
-  // --- ENTUR ---
+// --- ENTUR ---
   const STOPS = [
     { id: "NSR:StopPlace:58353", name: "Bislett", elementId: "bislett" },
     { id: "NSR:StopPlace:6286",  name: "Colletts gate", elementId: "colletts" }

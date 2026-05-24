@@ -24,7 +24,7 @@ body {
 .page.active { display: block; }
 
 /* Værsiden */
-#vaer { padding: 2rem; }
+/* #vaer { padding: 2rem; } */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -107,4 +107,42 @@ body {
   color: #111;
   min-width: 3.5rem;
   text-align: right;
+}
+
+.section-label {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #aaa;
+  margin: 1.5rem 0 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#vaer {
+  padding: 2rem;
+  background: #FFFDE7;
+  min-height: calc(100vh - 56px);
+}
+
+#vaer .section-label {
+  color: #1565C0;
+}
+
+#vaer .card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-left: 4px solid #1565C0;
+}
+
+#vaer .card h2 {
+  font-size: 2.5rem;
+  color: #1565C0;
+  margin-bottom: 0.5rem;
+}
+
+#vaer .card .value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111;
 }
