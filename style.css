@@ -17,7 +17,8 @@ body {
 }
 .tab.active {
   color: #fff;
-  border-bottom: 2px solid #4a9eff;
+  // border-bottom: 2px solid #4a9eff;
+  border-bottom: 4px solid yellow;
   margin-bottom: -2px;
 }
 .page { display: none; }
