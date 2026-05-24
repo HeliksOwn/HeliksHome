@@ -47,7 +47,7 @@ body {
 }
 .stop-section { margin-bottom: 2.5rem; }
 .stop-section h2 {
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: #E3001B;
   margin-bottom: 1rem;
@@ -65,7 +65,7 @@ body {
   background: #E3001B;
   color: #fff;
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 1.5rem;
   padding: 0.2rem 0.7rem;
   border-radius: 6px;
   min-width: 2.5rem;
@@ -86,13 +86,13 @@ body {
 }
 .departure:last-child { border-bottom: none; }
 .direction-arrow {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #E3001B;
   min-width: 1rem;
 }
 .dest {
   flex: 1;
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #222;
 }
 .realtime-dot {
@@ -102,7 +102,7 @@ body {
   flex-shrink: 0;
 }
 .time {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #111;
   min-width: 3.5rem;
