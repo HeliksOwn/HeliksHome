@@ -257,3 +257,39 @@ body {
   color: rgba(180, 220, 255, 0.9);
   font-size: 1.2rem;
 }
+
+#natur {
+  padding: 2rem;
+  min-height: calc(100vh - 56px);
+  background: linear-gradient(135deg, #87CEEB 0%, #4a9eff 50%, #1565C0 100%);
+  color: #fff;
+}
+
+.natur-card {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+
+.natur-card:hover {
+  transform: translateY(-2px);
+}
+
+.natur-label {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.natur-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+}
