@@ -40,12 +40,20 @@ body {
 .card .value { font-size: 2.5rem; font-weight: 700; }
 
 /* Rutersiden */
-#ruter {
+/* #ruter {
   background: #fff;
   color: #111;
   min-height: calc(100vh - 56px);
   padding: 2rem;
+} */
+
+#ruter {
+  background: linear-gradient(135deg, #FFEE8C 0%, #fff9d6 50%, #fffef5 100%);
+  color: #111;
+  min-height: calc(100vh - 56px);
+  padding: 2rem;
 }
+
 .stop-section { margin-bottom: 2.5rem; }
 .stop-section h2 {
   font-size: 1.75rem;
@@ -62,7 +70,19 @@ body {
   gap: 1.5rem;
 }
 
-.line-group { margin-bottom: 1.5rem; }
+/* .line-group { margin-bottom: 1.5rem; } */
+
+.line-group {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  margin-bottom: 0;
+}
+
 .line-header {
   display: flex;
   align-items: center;
