@@ -1,5 +1,0 @@
-{
-  "env": {
-    "NETATMO_TOKEN": "@netatmo_token"
-  }
-}
