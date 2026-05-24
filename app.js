@@ -204,3 +204,4 @@ async function fetchNature() {
     }
     fetchNature();
     setInterval(fetchNature, 30 * 60 * 1000);
+}
