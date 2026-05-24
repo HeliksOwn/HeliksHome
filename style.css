@@ -1,0 +1,110 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: #1a1a2e;
+  color: #eee;
+}
+.tabs {
+  display: flex;
+  background: #0f0f1a;
+  border-bottom: 2px solid #333;
+}
+.tab {
+  padding: 1rem 2rem;
+  cursor: pointer;
+  color: #aaa;
+  font-size: 2rem;
+}
+.tab.active {
+  color: #fff;
+  border-bottom: 2px solid #4a9eff;
+  margin-bottom: -2px;
+}
+.page { display: none; }
+.page.active { display: block; }
+
+/* Værsiden */
+#vaer { padding: 2rem; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+.card {
+  background: #16213e;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.card h2 { font-size: 2.5rem; color: #aaa; margin-bottom: 0.5rem; }
+.card .value { font-size: 2.5rem; font-weight: 700; }
+
+/* Rutersiden */
+#ruter {
+  background: #fff;
+  color: #111;
+  min-height: calc(100vh - 56px);
+  padding: 2rem;
+}
+.stop-section { margin-bottom: 2.5rem; }
+.stop-section h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #E3001B;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #E3001B;
+}
+.line-group { margin-bottom: 1.5rem; }
+.line-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.line-badge {
+  background: #E3001B;
+  color: #fff;
+  font-weight: 700;
+  font-size: 2rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 6px;
+  min-width: 2.5rem;
+  text-align: center;
+}
+.line-name {
+  font-size: 1.5rem;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.departure {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.departure:last-child { border-bottom: none; }
+.direction-arrow {
+  font-size: 2rem;
+  color: #E3001B;
+  min-width: 1rem;
+}
+.dest {
+  flex: 1;
+  font-size: 2rem;
+  color: #222;
+}
+.realtime-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #00a651;
+  flex-shrink: 0;
+}
+.time {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111;
+  min-width: 3.5rem;
+  text-align: right;
+}
