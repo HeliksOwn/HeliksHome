@@ -54,6 +54,13 @@ body {
   padding-bottom: 0.5rem;
   border-bottom: 2px solid #E3001B;
 }
+
+.lines-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
 .line-group { margin-bottom: 1.5rem; }
 .line-header {
   display: flex;

@@ -66,50 +66,99 @@
   }
 
   function renderDepartures(calls, elementId) {
-    const el = document.getElementById(elementId);
-    if (!calls || calls.length === 0) {
-      el.innerHTML = '<p style="color:#aaa">Ingen avganger funnet</p>';
-      return;
-    }
-
-    // Grupper per linje
-    const byLine = {};
-    for (const call of calls) {
-      const code = call.serviceJourney.journeyPattern.line.publicCode;
-      if (!byLine[code]) byLine[code] = [];
-      byLine[code].push(call);
-    }
-
-    el.innerHTML = "";
-    for (const [lineCode, departures] of Object.entries(byLine)) {
-      const group = document.createElement("div");
-      group.className = "line-group";
-
-      const mode = departures[0].serviceJourney.journeyPattern.line.transportMode;
-      const modeLabel = mode === "tram" ? "Trikk" : mode === "bus" ? "Buss" : mode;
-
-      group.innerHTML = `
-        <div class="line-header">
-          <span class="line-badge">${lineCode}</span>
-          <span class="line-name">${modeLabel}</span>
-        </div>
-      `;
-
-      for (const dep of departures.slice(0, 4)) {
-        const dest = dep.destinationDisplay.frontText;
-        const div = document.createElement("div");
-        div.className = "departure";
-        div.innerHTML = `
-          <span class="direction-arrow">→</span>
-          <span class="dest">${dest}</span>
-          ${dep.realtime ? '<span class="realtime-dot"></span>' : ''}
-          <span class="time">${formatTime(dep.expectedDepartureTime)}</span>
-        `;
-        group.appendChild(div);
-      }
-      el.appendChild(group);
-    }
+  const el = document.getElementById(elementId);
+  if (!calls || calls.length === 0) {
+    el.innerHTML = '<p style="color:#aaa">Ingen avganger funnet</p>';
+    return;
   }
+
+  const byLine = {};
+  for (const call of calls) {
+    const code = call.serviceJourney.journeyPattern.line.publicCode;
+    if (!byLine[code]) byLine[code] = [];
+    byLine[code].push(call);
+  }
+
+  const grid = document.createElement("div");
+  grid.className = "lines-grid";
+  el.innerHTML = "";
+
+  for (const [lineCode, departures] of Object.entries(byLine)) {
+    const group = document.createElement("div");
+    group.className = "line-group";
+
+    const mode = departures[0].serviceJourney.journeyPattern.line.transportMode;
+    const modeLabel = mode === "tram" ? "Trikk" : mode === "bus" ? "Buss" : mode;
+
+    group.innerHTML = `
+      <div class="line-header">
+        <span class="line-badge">${lineCode}</span>
+        <span class="line-name">${modeLabel}</span>
+      </div>
+    `;
+
+    for (const dep of departures.slice(0, 4)) {
+      const dest = dep.destinationDisplay.frontText;
+      const div = document.createElement("div");
+      div.className = "departure";
+      div.innerHTML = `
+        <span class="direction-arrow">→</span>
+        <span class="dest">${dest}</span>
+        ${dep.realtime ? '<span class="realtime-dot"></span>' : ''}
+        <span class="time">${formatTime(dep.expectedDepartureTime)}</span>
+      `;
+      group.appendChild(div);
+    }
+    grid.appendChild(group);
+  }
+  el.appendChild(grid);
+}
+
+//   function renderDeparturesOLd(calls, elementId) {
+//     const el = document.getElementById(elementId);
+//     if (!calls || calls.length === 0) {
+//       el.innerHTML = '<p style="color:#aaa">Ingen avganger funnet</p>';
+//       return;
+//     }
+
+//     // Grupper per linje
+//     const byLine = {};
+//     for (const call of calls) {
+//       const code = call.serviceJourney.journeyPattern.line.publicCode;
+//       if (!byLine[code]) byLine[code] = [];
+//       byLine[code].push(call);
+//     }
+
+//     el.innerHTML = "";
+//     for (const [lineCode, departures] of Object.entries(byLine)) {
+//       const group = document.createElement("div");
+//       group.className = "line-group";
+
+//       const mode = departures[0].serviceJourney.journeyPattern.line.transportMode;
+//       const modeLabel = mode === "tram" ? "Trikk" : mode === "bus" ? "Buss" : mode;
+
+//       group.innerHTML = `
+//         <div class="line-header">
+//           <span class="line-badge">${lineCode}</span>
+//           <span class="line-name">${modeLabel}</span>
+//         </div>
+//       `;
+
+//       for (const dep of departures.slice(0, 4)) {
+//         const dest = dep.destinationDisplay.frontText;
+//         const div = document.createElement("div");
+//         div.className = "departure";
+//         div.innerHTML = `
+//           <span class="direction-arrow">→</span>
+//           <span class="dest">${dest}</span>
+//           ${dep.realtime ? '<span class="realtime-dot"></span>' : ''}
+//           <span class="time">${formatTime(dep.expectedDepartureTime)}</span>
+//         `;
+//         group.appendChild(div);
+//       }
+//       el.appendChild(group);
+//     }
+//   }
 
   async function fetchAllDepartures() {
     for (const stop of STOPS) {
@@ -161,7 +210,7 @@ async function fetchNature() {
   }
 
   // Pollen ikke tilgjengelig via Yr API – vis info
-  document.getElementById("pollen").textContent = "Se naaf.no";
+  // document.getElementById("pollen").textContent = "Se naaf.no";
 
   // 7-dagersprognose – én per dag kl 12:00
   const days = {};
