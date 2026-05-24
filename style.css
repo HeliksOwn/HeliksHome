@@ -120,7 +120,7 @@ body {
 
 #vaer {
   padding: 2rem;
-  background: #FFFDE7;
+  background: #fffba0;
   min-height: calc(100vh - 56px);
 }
 
@@ -133,16 +133,19 @@ body {
   border-radius: 12px;
   padding: 1.5rem;
   border-left: 4px solid #1565C0;
+  border-top: 2px solid #1565C0;
+  border-right: 1px solid #1565C0;
+  border-bottom: 1px solid #1565C0;
 }
 
 #vaer .card h2 {
-  font-size: 2.5rem;
+  font-size: 1cqh;
   color: #1565C0;
   margin-bottom: 0.5rem;
 }
 
 #vaer .card .value {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #111;
 }
