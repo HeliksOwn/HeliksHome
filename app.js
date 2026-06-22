@@ -5,6 +5,15 @@
     el.classList.add('active');
   }
 
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
     async function fetchWeather() {
     try {
       const res = await fetch("/api/netatmo");
@@ -163,6 +172,102 @@ function getSymbol(code) {
 }
 
 let allWeatherData = null;
+let jeopardyRetryTimer = null;
+let jeopardyAdvanceTimeout = null;
+let jeopardyCountdownInterval = null;
+let jeopardyRevealTimeout = null;
+let jeopardyTransitionTimer = null;
+let jeopardySets = [];
+let jeopardyCurrentIndex = -1;
+let jeopardyLoadInFlight = false;
+
+function clearJeopardyTimers() {
+  if (jeopardyRetryTimer) {
+    clearTimeout(jeopardyRetryTimer);
+    jeopardyRetryTimer = null;
+  }
+
+  if (jeopardyAdvanceTimeout) {
+    clearTimeout(jeopardyAdvanceTimeout);
+    jeopardyAdvanceTimeout = null;
+  }
+
+  if (jeopardyCountdownInterval) {
+    clearInterval(jeopardyCountdownInterval);
+    jeopardyCountdownInterval = null;
+  }
+
+  if (jeopardyRevealTimeout) {
+    clearTimeout(jeopardyRevealTimeout);
+    jeopardyRevealTimeout = null;
+  }
+
+  if (jeopardyTransitionTimer) {
+    clearTimeout(jeopardyTransitionTimer);
+    jeopardyTransitionTimer = null;
+  }
+}
+
+function buildJeopardyCardHtml(clue) {
+  return `
+    <article class="jeopardy-card">
+      <div class="value">${escapeHtml(clue.value || "$0")}</div>
+      <div class="category">${escapeHtml(clue.category)}</div>
+      <div class="question">${escapeHtml(clue.question)}</div>
+      <div class="answer"><strong>Answer:</strong> ${escapeHtml(clue.answer || "Unknown")}</div>
+    </article>
+  `;
+}
+
+function renderJeopardyBoard(boardEl, currentSet) {
+  boardEl.innerHTML = currentSet.clues.map(buildJeopardyCardHtml).join("");
+}
+
+function showJeopardyAnswers(boardEl, answerTimerEl) {
+  if (jeopardyRevealTimeout) {
+    clearTimeout(jeopardyRevealTimeout);
+    jeopardyRevealTimeout = null;
+  }
+
+  boardEl.classList.remove("answers-hidden");
+  answerTimerEl.textContent = "Svarene vises nå";
+}
+
+function animateJeopardySwap(boardEl, currentSet, answerTimerEl) {
+  const nextHtml = currentSet.clues.map(buildJeopardyCardHtml).join("");
+
+  boardEl.classList.remove("is-visible", "is-entering");
+  boardEl.classList.add("is-exiting");
+
+  jeopardyTransitionTimer = setTimeout(() => {
+    boardEl.innerHTML = nextHtml;
+    boardEl.classList.remove("is-exiting");
+    boardEl.classList.add("is-entering", "answers-hidden");
+
+    requestAnimationFrame(() => {
+      boardEl.classList.add("is-visible");
+      boardEl.classList.remove("is-entering");
+    });
+
+    jeopardyRevealTimeout = setTimeout(() => showJeopardyAnswers(boardEl, answerTimerEl), 30000);
+  }, 260);
+}
+
+function animateBoardSwap(boardEl, html) {
+  boardEl.classList.remove("is-entering", "is-visible");
+  boardEl.classList.add("is-exiting");
+
+  jeopardyTransitionTimer = setTimeout(() => {
+    boardEl.innerHTML = html;
+    boardEl.classList.remove("is-exiting");
+    boardEl.classList.add("is-entering");
+
+    requestAnimationFrame(() => {
+      boardEl.classList.add("is-visible");
+      boardEl.classList.remove("is-entering");
+    });
+  }, 260);
+}
 
 function showHourlyForecast(dateStr) {
   if (!allWeatherData) return;
@@ -268,3 +373,172 @@ async function fetchNature() {
 
 fetchNature();
 setInterval(fetchNature, 30 * 60 * 1000);
+
+async function fetchJeopardy() {
+  const sourceEl = document.getElementById("jeopardy-source");
+  const countEl = document.getElementById("jeopardy-count");
+  const boardEl = document.getElementById("jeopardy-board");
+  const setLabelEl = document.getElementById("jeopardy-set-label");
+  const answerTimerEl = document.getElementById("jeopardy-answer-timer");
+  const timerEl = document.getElementById("jeopardy-timer");
+  const prevButton = document.getElementById("jeopardy-prev-set");
+
+  if (!sourceEl || !countEl || !boardEl || !setLabelEl || !answerTimerEl || !timerEl || !prevButton) return;
+
+  clearJeopardyTimers();
+  timerEl.onclick = () => advanceJeopardySet();
+  timerEl.style.cursor = "pointer";
+  answerTimerEl.onclick = () => showJeopardyAnswers(boardEl, answerTimerEl);
+  answerTimerEl.style.cursor = "pointer";
+
+  const renderCurrentSet = () => {
+    const currentSet = jeopardySets[jeopardyCurrentIndex];
+
+    if (!currentSet) {
+      return;
+    }
+
+    sourceEl.textContent = `Source: ${currentSet.source || "j-archive.com"}`;
+    setLabelEl.textContent = `${jeopardyCurrentIndex + 1}/${jeopardySets.length} · ${currentSet.round} · ${currentSet.category}`;
+    countEl.textContent = `${currentSet.clues.length}/5 clues`;
+    answerTimerEl.textContent = "Svar vises om 30s";
+    timerEl.textContent = "Next set in 60s";
+    prevButton.disabled = jeopardyCurrentIndex <= 0;
+
+    renderJeopardyBoard(boardEl, currentSet);
+    boardEl.classList.add("answers-hidden", "is-visible");
+    boardEl.classList.remove("is-exiting", "is-entering");
+
+    jeopardyRevealTimeout = setTimeout(() => showJeopardyAnswers(boardEl, answerTimerEl), 30000);
+  };
+
+  const renderCurrentSetWithTransition = () => {
+    const currentSet = jeopardySets[jeopardyCurrentIndex];
+
+    if (!currentSet) {
+      return;
+    }
+
+    sourceEl.textContent = `Source: ${currentSet.source || "j-archive.com"}`;
+    setLabelEl.textContent = `${jeopardyCurrentIndex + 1}/${jeopardySets.length} · ${currentSet.round} · ${currentSet.category}`;
+    countEl.textContent = `${currentSet.clues.length}/5 clues`;
+    answerTimerEl.textContent = "Svar vises om 30s";
+    timerEl.textContent = "Next set in 60s";
+    prevButton.disabled = jeopardyCurrentIndex <= 0;
+
+    if (!boardEl.innerHTML.trim()) {
+      renderCurrentSet();
+      return;
+    }
+
+    animateJeopardySwap(boardEl, currentSet, answerTimerEl);
+  };
+
+  const scheduleAdvance = () => {
+    if (jeopardyAdvanceTimeout) {
+      clearTimeout(jeopardyAdvanceTimeout);
+      jeopardyAdvanceTimeout = null;
+    }
+
+    let remaining = 60;
+    timerEl.textContent = `Next set in ${remaining}s`;
+    jeopardyCountdownInterval = setInterval(() => {
+      remaining -= 1;
+      timerEl.textContent = `Next set in ${Math.max(remaining, 0)}s`;
+      if (remaining <= 0) {
+        clearInterval(jeopardyCountdownInterval);
+        jeopardyCountdownInterval = null;
+        timerEl.textContent = "Loading next set…";
+        advanceJeopardySet();
+      }
+    }, 1000);
+
+    jeopardyAdvanceTimeout = setTimeout(() => {
+      clearInterval(jeopardyCountdownInterval);
+      jeopardyCountdownInterval = null;
+      timerEl.textContent = "Loading next set…";
+      advanceJeopardySet();
+    }, 60000);
+  };
+
+  async function loadFreshSet() {
+    if (jeopardyLoadInFlight) return;
+    jeopardyLoadInFlight = true;
+
+    try {
+      sourceEl.textContent = "Source: loading…";
+      const exclude = jeopardySets.map(set => set.id).join(",");
+      const res = await fetch(`/api/jeopardy?season=42&exclude=${encodeURIComponent(exclude)}`);
+      const data = await res.json();
+      const currentSet = data.set;
+
+      if (!currentSet || !Array.isArray(currentSet.clues) || currentSet.clues.length !== 5) {
+        throw new Error("Jeopardy API did not return a full set");
+      }
+
+      currentSet.source = data.source || "j-archive.com";
+
+      jeopardySets.push(currentSet);
+      jeopardyCurrentIndex = jeopardySets.length - 1;
+      clearJeopardyTimers();
+      renderCurrentSet();
+      scheduleAdvance();
+    } catch (error) {
+      console.error("Feil ved henting av Jeopardy-sett:", error);
+      sourceEl.textContent = "Source: retrying…";
+      countEl.textContent = "0/5 clues";
+      setLabelEl.textContent = "Kunne ikke laste sett";
+      prevButton.disabled = jeopardyCurrentIndex <= 0;
+      boardEl.innerHTML = `
+        <article class="jeopardy-card">
+          <div class="value">--</div>
+          <div class="category">Jeopardy</div>
+          <div class="question">Kunne ikke laste spørsmål akkurat nå.</div>
+          <div class="answer"><strong>Answer:</strong> Prøv å laste siden på nytt.</div>
+        </article>
+      `;
+      timerEl.textContent = "Retrying in 5s";
+      answerTimerEl.textContent = "Svar vises om 30s";
+      jeopardyRetryTimer = setTimeout(fetchJeopardy, 5000);
+    } finally {
+      jeopardyLoadInFlight = false;
+    }
+  }
+
+  async function advanceJeopardySet() {
+    clearJeopardyTimers();
+
+    if (jeopardyCurrentIndex < jeopardySets.length - 1) {
+      jeopardyCurrentIndex += 1;
+      renderCurrentSetWithTransition();
+      scheduleAdvance();
+      return;
+    }
+
+    await loadFreshSet();
+  }
+
+  prevButton.onclick = () => {
+    if (jeopardyCurrentIndex <= 0) return;
+
+    clearJeopardyTimers();
+    jeopardyCurrentIndex -= 1;
+    renderCurrentSetWithTransition();
+    scheduleAdvance();
+  };
+
+  try {
+    if (jeopardySets.length === 0) {
+      await loadFreshSet();
+    } else {
+      renderCurrentSetWithTransition();
+      scheduleAdvance();
+    }
+  } catch (error) {
+    console.error("Feil ved henting av Jeopardy-data:", error);
+    jeopardyRetryTimer = setTimeout(fetchJeopardy, 5000);
+  }
+}
+
+fetchJeopardy();
+setInterval(fetchJeopardy, 10 * 60 * 1000);

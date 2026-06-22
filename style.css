@@ -347,3 +347,233 @@ body {
   color: rgba(180, 220, 255, 0.85);
   font-size: 0.85rem;
 }
+
+/* Jeopardy tab */
+#jeopardy {
+  min-height: calc(100vh - 56px);
+  padding: 2rem;
+  background: linear-gradient(135deg, #150050 0%, #3c096c 45%, #0f172a 100%);
+  color: #fff;
+}
+
+.jeopardy-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.jeopardy-hero h2 {
+  font-size: 2.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.jeopardy-hero p {
+  max-width: 42rem;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.jeopardy-label {
+  color: rgba(255, 255, 255, 0.7) !important;
+  margin-top: 0 !important;
+}
+
+.jeopardy-meta {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.jeopardy-button {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.8rem 1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+  touch-action: manipulation;
+}
+
+.jeopardy-button:active:not(:disabled) {
+  transform: scale(0.98);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.jeopardy-button:focus-visible {
+  outline: 2px solid rgba(255, 209, 102, 0.9);
+  outline-offset: 2px;
+}
+
+.jeopardy-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.timer-button {
+  white-space: nowrap;
+  background: rgba(255, 209, 102, 0.18);
+  border-color: rgba(255, 209, 102, 0.35);
+  color: #fff6d3;
+  font-weight: 700;
+}
+
+.meta-pill {
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.95rem;
+  backdrop-filter: blur(12px);
+}
+
+.jeopardy-panel {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.25);
+}
+
+.jeopardy-board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1rem;
+  transition: transform 0.28s ease, opacity 0.28s ease;
+}
+
+.jeopardy-board.is-exiting {
+  opacity: 0;
+  transform: translateX(-6%);
+}
+
+.jeopardy-board.is-entering {
+  opacity: 0;
+  transform: translateX(6%);
+}
+
+.jeopardy-board.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.jeopardy-board.answers-hidden .answer {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.25s ease;
+}
+
+.jeopardy-board .answer {
+  opacity: 1;
+  max-height: 8rem;
+  overflow: hidden;
+  transform: translateY(0);
+  transition: opacity 0.25s ease, transform 0.25s ease, max-height 0.25s ease;
+}
+
+.jeopardy-card {
+  border-radius: 18px;
+  padding: 1.2rem 1.25rem;
+  background: linear-gradient(180deg, rgba(39, 55, 140, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  min-height: 18rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+}
+
+.jeopardy-card .value {
+  color: #ffd166;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+}
+
+.jeopardy-card .category {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.86rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.jeopardy-card .question {
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: #fff;
+  flex: 1;
+}
+
+.jeopardy-card .answer {
+  color: rgba(223, 233, 255, 0.84);
+  font-size: 0.92rem;
+}
+
+.jeopardy-card .answer strong {
+  color: #fff;
+}
+
+.jeopardy-footer {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+@media (max-width: 1200px) {
+  .jeopardy-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .jeopardy-board {
+    grid-template-columns: 1fr;
+  }
+
+  .jeopardy-card {
+    min-height: auto;
+  }
+
+  .jeopardy-hero h2 {
+    font-size: 1.8rem;
+  }
+
+  .jeopardy-button {
+    width: 100%;
+    justify-content: center;
+    min-height: 3.25rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .tabs {
+    overflow-x: auto;
+  }
+
+  .tab {
+    font-size: 1.2rem;
+    padding: 0.9rem 1rem;
+    white-space: nowrap;
+  }
+
+  .jeopardy-panel,
+  .jeopardy-grid {
+    margin-bottom: 1rem;
+  }
+
+  .ticker-window::before,
+  .ticker-window::after {
+    width: 40px;
+  }
+}

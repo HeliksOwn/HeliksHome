@@ -25,6 +25,7 @@ export default function Home() {
         <div className="tab" onClick={(e) => { showTab('vaer', e.currentTarget) }}>🌿 W10</div>
         <div className="tab active" onClick={(e) => { showTab('ruter', e.currentTarget) }}>🚌 Ruter</div>
         <div className="tab" onClick={(e) => { showTab('natur', e.currentTarget) }}>🌡  Yr</div>
+        <div className="tab" onClick={(e) => { showTab('jeopardy', e.currentTarget) }}>❓ Jeopardy</div>
       </div>
 
       <div id="vaer" className="page">
@@ -103,6 +104,30 @@ export default function Home() {
 
         <div className="hourly-section">
           <div id="hourly-forecast"></div>
+        </div>
+      </div>
+
+      <div id="jeopardy" className="page">
+        <div className="jeopardy-hero">
+          <div>
+            <div className="section-label jeopardy-label">Open database</div>
+            <h2>Jeopardy ticker</h2>
+            <p>Fem clues fra samme kategori vises samtidig. Settet skifter automatisk hvert minutt, og tidligere sett ligger i minnet så du kan gå tilbake.</p>
+          </div>
+          <div className="jeopardy-meta">
+            <button className="jeopardy-button" id="jeopardy-prev-set" type="button">← Forrige sett</button>
+            <div className="meta-pill" id="jeopardy-set-label">Laster sett…</div>
+            <button className="jeopardy-button timer-button" id="jeopardy-answer-timer" type="button">Svar vises om 30s</button>
+            <div className="meta-pill" id="jeopardy-source">Source: loading…</div>
+          </div>
+        </div>
+
+        <div className="jeopardy-panel">
+          <div className="jeopardy-board" id="jeopardy-board"></div>
+          <div className="jeopardy-footer">
+            <div className="meta-pill" id="jeopardy-count">0/5 clues</div>
+            <button className="jeopardy-button timer-button" id="jeopardy-timer" type="button">Next set in 60s</button>
+          </div>
         </div>
       </div>
     </>
