@@ -1,4 +1,7 @@
 export default async function handler(req, res) {
+  res.setHeader("x-helikshome-api", "yr");
+  res.setHeader("x-helikshome-api-version", "2026-06-22-netatmo-route-cleanup");
+
   const lat = 59.9269;
   const lon = 10.7359;
 

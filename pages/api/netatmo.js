@@ -57,6 +57,9 @@ async function getStationsData(token) {
 
 export default async function handler(req, res) {
   try {
+    res.setHeader("x-helikshome-api", "netatmo");
+    res.setHeader("x-helikshome-api-version", "2026-06-22-netatmo-route-cleanup");
+
     let token = isTokenStillValid() ? cachedAccessToken : (process.env.NETATMO_TOKEN || "");
     let data = await getStationsData(token);
 
