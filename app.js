@@ -175,6 +175,7 @@ let allWeatherData = null;
 let jeopardyRetryTimer = null;
 let jeopardyAdvanceTimeout = null;
 let jeopardyCountdownInterval = null;
+let jeopardyAnswerCountdownInterval = null;
 let jeopardyRevealTimeout = null;
 let jeopardyTransitionTimer = null;
 let jeopardySets = [];
@@ -195,6 +196,11 @@ function clearJeopardyTimers() {
   if (jeopardyCountdownInterval) {
     clearInterval(jeopardyCountdownInterval);
     jeopardyCountdownInterval = null;
+  }
+
+  if (jeopardyAnswerCountdownInterval) {
+    clearInterval(jeopardyAnswerCountdownInterval);
+    jeopardyAnswerCountdownInterval = null;
   }
 
   if (jeopardyRevealTimeout) {
@@ -229,6 +235,11 @@ function showJeopardyAnswers(boardEl, answerTimerEl) {
     jeopardyRevealTimeout = null;
   }
 
+  if (jeopardyAnswerCountdownInterval) {
+    clearInterval(jeopardyAnswerCountdownInterval);
+    jeopardyAnswerCountdownInterval = null;
+  }
+
   boardEl.classList.remove("answers-hidden");
   answerTimerEl.textContent = "Svarene vises nå";
 }
@@ -249,6 +260,18 @@ function animateJeopardySwap(boardEl, currentSet, answerTimerEl) {
       boardEl.classList.remove("is-entering");
     });
 
+    let answerRemaining = 30;
+    if (jeopardyAnswerCountdownInterval) {
+      clearInterval(jeopardyAnswerCountdownInterval);
+    }
+    jeopardyAnswerCountdownInterval = setInterval(() => {
+      answerRemaining -= 1;
+      answerTimerEl.textContent = `Svar vises om ${Math.max(answerRemaining, 0)}s`;
+      if (answerRemaining <= 0) {
+        clearInterval(jeopardyAnswerCountdownInterval);
+        jeopardyAnswerCountdownInterval = null;
+      }
+    }, 1000);
     jeopardyRevealTimeout = setTimeout(() => showJeopardyAnswers(boardEl, answerTimerEl), 30000);
   }, 260);
 }
@@ -409,6 +432,18 @@ async function fetchJeopardy() {
     boardEl.classList.add("answers-hidden", "is-visible");
     boardEl.classList.remove("is-exiting", "is-entering");
 
+    let answerRemaining = 30;
+    if (jeopardyAnswerCountdownInterval) {
+      clearInterval(jeopardyAnswerCountdownInterval);
+    }
+    jeopardyAnswerCountdownInterval = setInterval(() => {
+      answerRemaining -= 1;
+      answerTimerEl.textContent = `Svar vises om ${Math.max(answerRemaining, 0)}s`;
+      if (answerRemaining <= 0) {
+        clearInterval(jeopardyAnswerCountdownInterval);
+        jeopardyAnswerCountdownInterval = null;
+      }
+    }, 1000);
     jeopardyRevealTimeout = setTimeout(() => showJeopardyAnswers(boardEl, answerTimerEl), 30000);
   };
 

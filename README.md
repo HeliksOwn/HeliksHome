@@ -59,14 +59,19 @@ Hver push til `main` branchen deployes automatisk til Vercel.
 ## Prosjektstruktur
 
 ```
-├── app.js              # Frontend logikk og UI
-├── index.html          # HTML template
+├── pages/
+│   ├── index.js        # HTML-skall (Next.js side)
+│   ├── _app.js         # Next.js app-wrapper
+│   └── api/
+│       ├── netatmo.js  # Netatmo API endpoint
+│       ├── yr.js       # Yr værforecast API endpoint
+│       └── jeopardy.js # Jeopardy API endpoint
+├── app.js              # Frontend logikk og UI (vanilla JS)
 ├── style.css           # Styling
-├── api/
-│   ├── netatmo.js      # Netatmo API endpoint
-│   └── yr.js           # Yr værforecast API endpoint
 └── README.md
 ```
+
+> **Merk**: Bruk `npm run dev` (port 3000) for lokal utvikling. Port 3001 brukes ikke.
 
 ## Avhengigheter
 
